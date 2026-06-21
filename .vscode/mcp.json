@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "filesystem": {
+      "command": "bunx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "./src",
+        "./tests",
+        "./docs"
+      ]
+    }
+  }
+}
