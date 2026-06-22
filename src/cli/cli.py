@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import override
 
 from tap import Tap
 
@@ -11,6 +12,7 @@ class ScorecardArgs(Tap):
     repo: str  # GitHub repository reference (owner/name, HTTPS or SSH URL).
     window_days: int = 30  # Time window in days to evaluate the repository over.
 
+    @override
     def configure(self) -> None:
         self.add_argument("-r", "--repo")
         self.add_argument("-w", "--window_days")

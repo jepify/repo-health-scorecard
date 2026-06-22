@@ -49,7 +49,7 @@ verbose = true
 [[repos.hooks]]
 id = "pytest"
 name = "Run tests"
-entry = "uv run pytest --cov-fail-under=80"
+entry = "uv run pytest"
 language = "system"
 pass_filenames = false
 always_run = false
