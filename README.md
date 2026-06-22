@@ -5,29 +5,41 @@ working. Are PRs being reviewed quickly? Are issues being closed or are they pil
 healthy rhythm to the contributions? How is the code quality? Are there any proactive measures implemented?
 
 This project scores GitHub repositories via a set of metrics.
-Metrics can be found in [002-metrics-definition](./docs/adr/002-metrics-definition.md).
 
-## TODOs
+## How it works
 
-- [ ] Create CLI for wrapping repo input and time window
-- [ ] Create GitHub RepositoryFacts
+Data gathering is separated from metric evaluation:
 
-  - [ ] Create RestAPI repository
-  - [ ] Create GraphQL repository
-- [ ] Create type for final report. With date, commit sha information, link. A Total metric score, a section for metrics
-- [ ] Create a folder with metrics building on a general protocol/interface.
-      Should have description of what and why this is important - nterpretations.
-      Should have remidations
-- [ ] Create report strategy to support multiple reports in the future.
+1. **Facts** are collected first from multiple sources (GitHub REST API and a shallow clone of the
+   repository) into a single immutable `GitHubRepositoryFacts` object.
+2. **Metrics** consume those shared facts and each produce a score, severity and remediation advice.
+   Metrics never fetch data themselves.
+3. **Reporting** aggregates the metric evaluations into a `Scorecard` with a weighted overall score
+   and renders it as a timestamped Markdown report.
 
-### PRioritized metric development
-- [ ] Create RawCode repository
-- [ ] Create Proactive tooling metrics. Start with simple dependabot, renovate.
-- [ ] Create GitHub action checks via Zizmor and general GitHub action lint perhaps.
-  // This should hopefully drive the implementation of the file interface in place
+## Usage
 
-- Create other repos to drag information about contributers, GitHub issues and PR reviews.
+Requires Python 3.14 and [uv](https://docs.astral.sh/uv/). A `GITHUB_TOKEN` environment variable is
+recommended to avoid REST API rate limits.
 
+```sh
+uv run -m src.main -r pallets/flask -w 90
+```
 
-## Nice to haves
-Logging
+| Flag                  | Description                                            | Default  |
+| --------------------- | ------------------------------------------------------ | -------- |
+| `-r`, `--repo`        | Repository reference (`owner/name`, HTTPS or SSH URL). | required |
+| `-w`, `--window_days` | Time window in days to evaluate the repository over.   | `30`     |
+
+The report is written to `<owner>-<name>-health-<timestamp>.md` in the working directory.
+
+## Project layout
+
+| Path             | Responsibility                                                         |
+| ---------------- | ---------------------------------------------------------------------- |
+| `src/facts/`     | Repositories that gather facts (REST API client, raw code clone).      |
+| `src/metrics/`   | Metric definitions and the evaluator that runs them.                   |
+| `src/reporting/` | Scorecard rendering (Markdown).                                        |
+| `src/models/`    | Shared domain models (repository, contributors, metrics).              |
+| `src/cli/`       | Typed CLI argument parsing.                                            |
+| `docs/adr/`      | Architecture Decision Records — read these before changing the design. |

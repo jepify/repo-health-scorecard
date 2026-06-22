@@ -21,14 +21,25 @@ CLI interface is defined via TAP (Typed Argument Parser) in `sr/cli/cli.py`.
 
 Models are defined in `src/models` and should be used across the codebase for consistency.
 
-**Prefer** parse-dont-validate patterns where possible. Do not use Pydantic frozen models, instead rely on immutability by convention and parse-only construction.
-
 ### Well typed architecture
 
 The architecture is designed to be well-typed, with clear interfaces and protocols.
 Everything must be typed.
 
 **Avoid** using dict, list. **Prefer** Pydantic models, Classes, enums, and newtype patterns.
+
+**Prefer** parse-dont-validate patterns where possible. Do not use Pydantic frozen models, instead rely on immutability by convention and parse-only construction.
+
+### Dependency injection
+
+Prefer dependency injection via constructor injection. Avoid global state and singletons.
+
+```python
+class GitHubRepositoryFactsRepository:
+    def __init__(self, dep_github_api_client: GitHubAPIClient | None, dep_raw_code_repository: RawCodeRepository | None):
+        self.github_api_client = dep_github_api_client or GitHubAPIClient()
+        self.raw_code_repository = dep_raw_code_repository or RawCodeRepository()
+```
 
 ## Tooling
 
