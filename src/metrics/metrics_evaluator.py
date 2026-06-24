@@ -3,7 +3,8 @@ from datetime import datetime
 from src.facts.github_repository_fact_fetcher import GitHubRepositoryFacts
 from src.metrics.metrics_definitions.bus_factor import BusFactorMetricEvaluator
 from src.metrics.metrics_definitions.dependency_management import DependencyManagementMetricEvaluator
-from src.models.metric import Metric, MetricEvaluation
+from src.models.metric_definition import MetricEvaluation
+from src.metrics.metric import Metric
 
 
 class MetricEvaluator:
@@ -27,6 +28,7 @@ class MetricEvaluator:
         facts: GitHubRepositoryFacts,
     ) -> list[MetricEvaluation]:
         """Generates all metrics for a repository."""
+
         evaluations = []
         for metric in self._metrics():
             evaluations.append(metric.evaluate(facts))

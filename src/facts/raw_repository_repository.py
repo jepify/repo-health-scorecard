@@ -62,17 +62,20 @@ class RawCodeRepository:
     @property
     def commit_sha(self) -> str:
         """The full SHA of the cloned ``HEAD`` commit."""
+
         if self._commit_sha is None:
             raise RuntimeError("Repository is not set up. Call setup() first.")
         return self._commit_sha
 
     def setup(self) -> Self:
         """Create a temp folder and shallow-clone ``HEAD`` into it."""
+
         if self._checkout_dir is not None:
             return self
 
         print("Setting up repository:", self._repository.clone_url)
 
+        # Create temp directory
         checkout_dir = Path(tempfile.mkdtemp(prefix="repo-health-"))
         print("Created temporary checkout directory:", checkout_dir)
         try:
@@ -92,6 +95,7 @@ class RawCodeRepository:
 
     def teardown(self) -> None:
         """Remove the temporary checkout, if any."""
+
         if self._checkout_dir is not None:
             print("Tearing down repository, removing checkout directory:", self._checkout_dir)
             shutil.rmtree(self._checkout_dir, ignore_errors=True)
@@ -106,6 +110,7 @@ class RawCodeRepository:
 
     def search(self, pattern: str) -> SearchResult:
         """Find lines matching ``pattern`` across files (grep-like)."""
+
         regex = re.compile(pattern)
         root = self.checkout_dir
         matches: list[FileMatch] = []
@@ -129,6 +134,7 @@ class RawCodeRepository:
 
     def list_files(self, glob: str = "*") -> FileListResult:
         """Find files matching ``glob`` (find-like), recursing into subdirectories."""
+
         # fd recurses by default; --hidden keeps dotfiles (e.g. .github/), and we
         # exclude .git so the checkout's own metadata never leaks into results.
         result = self._subprocess_runner.run(

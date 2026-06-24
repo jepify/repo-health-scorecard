@@ -9,7 +9,7 @@ from src.models.github import GitHubRepository
 class ScorecardArgs(Tap):
     """Command line arguments for the repo health scorecard."""
 
-    repo: str  # GitHub repository reference (owner/name, HTTPS or SSH URL).
+    repo: str  # GitHub repository reference (owner/name).
     window_days: int = 30  # Time window in days to evaluate the repository over.
 
     @override

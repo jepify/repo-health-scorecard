@@ -27,6 +27,9 @@ Separate **data gathering** from **metric evaluation**.
 2. A set of **metrics** each take `GitHubRepositoryFacts` as input and produce a
    metric result. Metrics share a common protocol/interface and never fetch data
    themselves.
+3. A **metrics evaluator** orchestrates the process: it takes the gathered
+   `GitHubRepositoryFacts` and runs each registered metric against those facts,
+   collecting the individual metric results into the overall scorecard.
 
 This decoupling means adding a metric is just adding a new check against existing
 facts. When a metric needs data we do not yet collect, we extend the relevant
@@ -44,6 +47,8 @@ flowchart LR
 
     FACTS[GitHubRepositoryFacts]
 
+    EVAL[Metrics evaluator]
+
     subgraph Metrics [Metrics]
         M1[Metric A]
         M2[Metric B]
@@ -58,9 +63,11 @@ flowchart LR
     REST --> FACTS
     GQL --> FACTS
 
-    FACTS --> M1
-    FACTS --> M2
-    FACTS --> M3
+    FACTS --> EVAL
+
+    EVAL --> M1
+    EVAL --> M2
+    EVAL --> M3
 ```
 
 ## Consequences

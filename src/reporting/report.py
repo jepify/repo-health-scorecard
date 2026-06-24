@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from src.models.metric import Scorecard
+from src.models.scorecard import Scorecard
 
 
 class GenerateReport(Protocol):

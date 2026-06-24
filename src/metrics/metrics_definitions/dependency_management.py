@@ -1,7 +1,8 @@
 from typing import override
 
 from src.facts.github_repository_fact_fetcher import GitHubRepositoryFacts
-from src.models.metric import Metric, MetricCategory, MetricDefinition, MetricEvaluation, MetricSeverity
+from src.metrics.metric import Metric
+from src.models.metric_definition import MetricCategory, MetricDefinition, MetricEvaluation, MetricSeverity
 
 DEPENDENCY_MANAGEMENT_METRIC: MetricDefinition = MetricDefinition(
     title="Dependency Management",

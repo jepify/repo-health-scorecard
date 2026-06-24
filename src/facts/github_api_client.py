@@ -62,6 +62,7 @@ class DefaultGitHubAPIClient(GitHubAPIClient):
     @override
     def get_collection(self, path: str, params: dict[str, str] | None = None) -> list[Any]:
         """GET every page of a list endpoint and return the concatenated items."""
+
         url: str | None = self._build_url(path, params)
 
         items: list[Any] = []
@@ -80,6 +81,7 @@ class DefaultGitHubAPIClient(GitHubAPIClient):
         returns 202 with an empty body. Retries a bounded number of times before
         giving up rather than blocking indefinitely.
         """
+
         url = self._build_url(path, params)
         for attempt in range(_STATS_MAX_ATTEMPTS):
             status, body, _next = self._get_page(url)
@@ -140,6 +142,7 @@ class DefaultGitHubAPIClient(GitHubAPIClient):
     @staticmethod
     def _parse_next_link(link_header: str | None) -> str | None:
         """Extract the ``rel="next"`` URL from a GitHub ``Link`` header, if any."""
+
         if not link_header:
             return None
         for part in link_header.split(","):

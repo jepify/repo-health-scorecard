@@ -34,7 +34,7 @@ Metrics are grouped into **categories**:
 
 - **Metadata metrics** — describe contributors and process health, e.g. _bus
   factor_ (contributor count and distribution).
-- **Code-quality metrics** — describe proactive engineering measures, e.g. active
+- **Code-quality Tooling metrics** — describe proactive engineering measures, e.g. active
   code scanning and automated dependency updates. These weigh most heavily on
   overall health.
 

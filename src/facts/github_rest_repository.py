@@ -16,6 +16,8 @@ _MAX_PER_PAGE = "100"
 class GitHubRestRepository:
     """Gathers repository facts from the GitHub REST API (see ADR 001).
 
+    Acts as a facade over :class:`GitHubAPIClient`.s
+
     On :meth:`setup` it fetches every contributor (all-time counts) and their
     weekly commit activity, exposing them as typed facts. Metrics never call this
     directly; they consume the facts it contributes.
@@ -46,27 +48,39 @@ class GitHubRestRepository:
 
     def setup(self) -> Self:
         """Fetch contributor counts and weekly commit stats from the REST API."""
+
         if self._contributions is not None and self._contributor_stats is not None:
             return self
 
-        owner, name = self._repository.owner, self._repository.name
+        self._contributions = self.get_repo_contributers()
+        print(f"Found {self._contributions.contributor_count} contributors")
 
+        self._contributor_stats = self.get_repo_contributor_stats()
+        print(f"Loaded weekly stats for {len(self._contributor_stats.contributors)} contributors")
+
+        return self
+
+    def get_repo_contributers(self) -> RepositoryContributions:
+        """Returns repository contributors from the GitHub REST API."""
+
+        owner, name = self._repository.owner, self._repository.name
         print(f"Fetching contributors for {owner}/{name} from the GitHub REST API")
         contributor_payloads = self._api_client.get_collection(
             f"/repos/{owner}/{name}/contributors",
-            {"per_page": _MAX_PER_PAGE},
+            {"per_page": _MAX_PER_PAGE, "anon": "true"},
         )
-        self._contributions = RepositoryContributions(
+        return RepositoryContributions(
             contributors=[Contributor.parse(payload) for payload in contributor_payloads],
         )
-        print(f"Found {self._contributions.contributor_count} contributors")
 
-        print(f"Fetching weekly commit stats for {owner}/{name} (may take a moment to compute)")
+    def get_repo_contributor_stats(self) -> RepositoryContributorStats:
+        """Returns repository contributor stats from the GitHub REST API."""
+
+        owner, name = self._repository.owner, self._repository.name
+        print(f"Fetching weekly commit stats for {owner}/{name} from the GitHub REST API")
         stats_payloads = self._api_client.get_computed_collection(
             f"/repos/{owner}/{name}/stats/contributors",
         )
-        self._contributor_stats = RepositoryContributorStats(
+        return RepositoryContributorStats(
             contributors=[ContributorActivity.parse(payload) for payload in stats_payloads],
         )
-        print(f"Loaded weekly stats for {len(self._contributor_stats.contributors)} contributors")
-        return self

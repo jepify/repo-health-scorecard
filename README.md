@@ -43,3 +43,47 @@ The report is written to `<owner>-<name>-health-<timestamp>.md` in the working d
 | `src/models/`    | Shared domain models (repository, contributors, metrics).              |
 | `src/cli/`       | Typed CLI argument parsing.                                            |
 | `docs/adr/`      | Architecture Decision Records — read these before changing the design. |
+
+## Existing metics
+
+### Dependency management
+
+With AI and the world evolving more and more vulnerabilities emerge. We need to be proactive and have tooling to automate this.
+Otherwise we end up not patching only parts and risk security of our applications.
+
+Having d.g. Dependabot installed indicates if the maintainers care about their community and users. If they do not patch things, then users will switch.
+It is also a sign of a proactive culture.
+
+This is a demonstration of a tooling/code quality metric using the raw code repository.
+
+### Possible paths
+
+- Zizmor linter for GitHub actions.
+- Precommits.
+- Testing strategy
+- Licensing
+
+### Bus factor
+
+As developers get effecient with AI and organizations grow, we end up having a lot of repos.
+If some of these are tied up to individual it create silos and knowledge gaps which can be impactfull in the event that this individual leaves.
+
+For an open source repo low bus factor shows signs of individaulization where a single person governs the repo.
+It could led to less lead time on issues and feedback. Oppininions of this developer could also end up influincing the repo too much for it to be usable for others.
+
+### Posible paths
+- Semantic versioning
+
+## Future iterations
+
+- Use GitHub python package to acts as client towards GitHub. No need to re-invent the repo
+- Logging over prints with nice progress
+- More statistics from rest and GraphQL API to alow for even more metrics
+- Increase number of metrics
+- More visualizations in the output
+- Better builder like pattern to configure the entire system making it more composable. Report generation, metric evaluation and registration.
+- Error handling providing a unified way of handling them to the user
+
+## Alternatives
+
+- [ossf/scorecard](https://github.com/ossf/scorecard#what-is-scorecard). Opensource security foundation tool with focus on security scores.

@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import override
 
 from src.facts.github_repository_fact_fetcher import GitHubRepositoryFacts
-from src.models.metric import Metric, MetricCategory, MetricDefinition, MetricEvaluation, MetricSeverity
+from src.models.metric_definition import MetricCategory, MetricDefinition, MetricEvaluation, MetricSeverity
+from src.metrics.metric import Metric
 
 BUS_FACTOR_METRIC: MetricDefinition = MetricDefinition(
     title="Bus Factor",
@@ -52,6 +53,7 @@ class BusFactorMetricEvaluator(Metric):
         the most active contributor down until the running total crosses the
         threshold, then returns how many contributors that took.
         """
+
         total = sum(commit_counts)
         if total == 0:
             return 0
@@ -68,6 +70,7 @@ class BusFactorMetricEvaluator(Metric):
 
     def _score(self, bus_factor: int) -> int:
         """Map the bus factor to a 0-10 score (more shared ownership scores higher)."""
+
         if bus_factor <= 1:
             return 0
         if bus_factor <= 3:

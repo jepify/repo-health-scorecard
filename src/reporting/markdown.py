@@ -1,6 +1,7 @@
 from typing import override
 
-from src.models.metric import MetricEvaluation, Scorecard
+from src.models.metric_definition import MetricEvaluation
+from src.models.scorecard import Scorecard
 from src.reporting.report import GenerateReport
 
 
